@@ -4,9 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Heartbit | ITの「こうしたい」を、かたちに。</title>
+<title>Heartbit | ON YOUR MARK — ITの「こうしたい」を、かたちに。</title>
+<meta name="description" content="Heartbit合同会社（設立準備中）。ITコンサルティング、Web・システム開発、AI導入で、ITの「こうしたい」をかたちにします。">
+<meta name="theme-color" content="#05080f">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
+    :root {
+        --bg: #05080f;
+        --surface: rgba(255,255,255,0.04);
+        --line: rgba(255,255,255,0.09);
+        --text: #ffffff;
+        --muted: #94a3b8;
+        --dim: #5b687c;
+        --cyan: #43d9ff;
+        --violet: #9b8cff;
+        --heart: #ff4f7b;
+        --display: "Space Grotesk", "Noto Sans JP", sans-serif;
+    }
+
     * {
         box-sizing: border-box;
         margin: 0;
@@ -19,52 +38,62 @@
 
     body {
         font-family:
+            "Noto Sans JP",
             -apple-system,
             BlinkMacSystemFont,
             "Segoe UI",
-            "Noto Sans JP",
             sans-serif;
 
-        background: #07111f;
-        color: #ffffff;
+        background: var(--bg);
+        color: var(--text);
         overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
     }
 
-    /* 背景の光 */
-    body::before {
-        content: "";
-        position: fixed;
-        width: 700px;
-        height: 700px;
-        left: -250px;
-        top: -250px;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(0, 190, 255, 0.22),
-                transparent 65%
-            );
-
-        pointer-events: none;
+    ::selection {
+        background: var(--cyan);
+        color: var(--bg);
     }
 
-    body::after {
-        content: "";
+    /* 背景のグリッドと光 */
+    .backdrop {
         position: fixed;
-        width: 800px;
-        height: 800px;
-        right: -350px;
-        bottom: -350px;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
 
         background:
-            radial-gradient(
-                circle,
-                rgba(100, 70, 255, 0.20),
-                transparent 65%
-            );
+            radial-gradient(ellipse 60% 50% at 15% 10%, rgba(67,217,255,0.16), transparent 70%),
+            radial-gradient(ellipse 50% 50% at 90% 90%, rgba(155,140,255,0.16), transparent 70%),
+            radial-gradient(ellipse 40% 30% at 70% 30%, rgba(255,79,123,0.07), transparent 70%);
+    }
 
-        pointer-events: none;
+    .backdrop::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+
+        background-image:
+            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: 64px 64px;
+
+        mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+    }
+
+    /* スクロール進捗 */
+    .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        z-index: 20;
+
+        transform-origin: left;
+        transform: scaleX(0);
+        background: linear-gradient(90deg, var(--cyan), var(--violet), var(--heart));
     }
 
     /* HEADER */
@@ -77,8 +106,9 @@
         z-index: 10;
 
         backdrop-filter: blur(14px);
-        background: rgba(7, 17, 31, 0.55);
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        -webkit-backdrop-filter: blur(14px);
+        background: rgba(5, 8, 15, 0.55);
+        border-bottom: 1px solid var(--line);
     }
 
     .nav {
@@ -90,161 +120,377 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 20px;
     }
 
     .logo {
+        color: var(--text);
+        text-decoration: none;
+        font-family: var(--display);
         font-size: 22px;
         font-weight: 700;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.02em;
     }
 
     .logo span {
-        color: #43d9ff;
+        color: var(--cyan);
+    }
+
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 30px;
     }
 
     nav a {
         color: #b9c7d9;
         text-decoration: none;
-        margin-left: 30px;
+        margin-left: 28px;
+        font-family: var(--display);
         font-size: 14px;
-        transition: 0.25s;
+        transition: color 0.25s;
     }
 
     nav a:hover {
-        color: #ffffff;
+        color: var(--text);
+    }
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 7px 13px;
+        border-radius: 100px;
+        border: 1px solid rgba(255,79,123,0.35);
+        background: rgba(255,79,123,0.08);
+
+        color: #ffb3c4;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--heart);
+        box-shadow: 0 0 0 0 rgba(255,79,123,0.7);
+        animation: beat 1.6s infinite;
+    }
+
+    @keyframes beat {
+        0%   { box-shadow: 0 0 0 0 rgba(255,79,123,0.7); }
+        70%  { box-shadow: 0 0 0 10px rgba(255,79,123,0); }
+        100% { box-shadow: 0 0 0 0 rgba(255,79,123,0); }
     }
 
     /* HERO */
 
     .hero {
+        position: relative;
         min-height: 100vh;
+        min-height: 100svh;
 
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
 
-        padding: 120px 28px 80px;
-        position: relative;
+        max-width: none;
+        padding: 130px 28px 90px;
+        overflow: hidden;
+    }
+
+    #pulse {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
     }
 
     .hero-inner {
-        max-width: 1100px;
+        position: relative;
+        max-width: 1200px;
         width: 100%;
+        margin: 0 auto;
     }
 
-    .tag {
-        display: inline-block;
+    .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 28px;
 
-        padding: 8px 15px;
-        margin-bottom: 30px;
-
-        border: 1px solid rgba(67,217,255,0.35);
-        border-radius: 100px;
-
-        color: #78e5ff;
-        background: rgba(67,217,255,0.06);
-
+        color: var(--muted);
+        font-family: var(--display);
         font-size: 13px;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
     }
 
-    h1 {
-        font-size: clamp(48px, 8vw, 100px);
-        line-height: 1.03;
-        letter-spacing: -0.045em;
-        max-width: 1000px;
+    .eyebrow::before {
+        content: "";
+        width: 40px;
+        height: 1px;
+        background: var(--cyan);
+    }
+
+    h1.mark {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: clamp(64px, 12vw, 176px);
+        line-height: 0.88;
+        letter-spacing: -0.055em;
+    }
+
+    .mark .row {
+        display: block;
+        overflow: hidden;
+        padding-bottom: 0.06em;
+    }
+
+    .mark .word {
+        display: inline-block;
+        transform: translateY(110%);
+        animation: rise 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .mark .row:nth-child(2) .word {
+        animation-delay: 0.15s;
+    }
+
+    @keyframes rise {
+        to { transform: translateY(0); }
     }
 
     .gradient {
-        background:
-            linear-gradient(
-                90deg,
-                #43d9ff,
-                #9b8cff,
-                #ffffff
-            );
-
+        background: linear-gradient(90deg, var(--cyan), var(--violet) 55%, var(--heart));
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
     }
 
-    .lead {
-        max-width: 670px;
-        margin-top: 35px;
+    .cursor {
+        display: inline-block;
+        width: 0.09em;
+        height: 0.72em;
+        margin-left: 0.06em;
+        background: var(--heart);
+        vertical-align: baseline;
+        animation: blink 1.1s steps(1) infinite;
+    }
 
-        color: #9baabd;
-        font-size: 18px;
-        line-height: 1.9;
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+
+    /* スタートライン */
+    .start-line {
+        position: relative;
+        height: 1px;
+        margin: 44px 0 38px;
+        background: linear-gradient(90deg, var(--cyan), rgba(155,140,255,0.5), transparent);
+
+        transform-origin: left;
+        transform: scaleX(0);
+        animation: draw 1.4s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .start-line::before {
+        content: "START";
+        position: absolute;
+        left: 0;
+        top: -26px;
+
+        color: var(--cyan);
+        font-family: var(--display);
+        font-size: 11px;
+        letter-spacing: 0.3em;
+    }
+
+    @keyframes draw {
+        to { transform: scaleX(1); }
+    }
+
+    .hero-bottom {
+        opacity: 0;
+        animation: fade 1s 0.8s ease forwards;
+    }
+
+    @keyframes fade {
+        to { opacity: 1; }
+    }
+
+    .catch {
+        font-size: clamp(24px, 3vw, 34px);
+        font-weight: 700;
+        line-height: 1.45;
+        letter-spacing: 0.01em;
+    }
+
+    .lead {
+        max-width: 560px;
+        margin-top: 20px;
+
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 2;
     }
 
     .buttons {
         display: flex;
-        gap: 16px;
-        margin-top: 42px;
+        gap: 14px;
+        margin-top: 34px;
         flex-wrap: wrap;
     }
 
     .button {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
 
-        padding: 15px 25px;
-        border-radius: 10px;
+        padding: 15px 26px;
+        border-radius: 100px;
 
         text-decoration: none;
+        font-family: var(--display);
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
 
-        transition: 0.25s;
+        transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
     }
 
     .button-primary {
-        color: #07111f;
-        background: #ffffff;
+        color: var(--bg);
+        background: var(--text);
     }
 
     .button-primary:hover {
         transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(255,255,255,0.15);
+        box-shadow: 0 15px 40px rgba(67,217,255,0.25);
     }
 
     .button-secondary {
-        color: #ffffff;
+        color: var(--text);
         border: 1px solid rgba(255,255,255,0.18);
-        background: rgba(255,255,255,0.04);
+        background: var(--surface);
     }
 
     .button-secondary:hover {
         background: rgba(255,255,255,0.09);
     }
 
+    .scroll-hint {
+        position: absolute;
+        left: 50%;
+        bottom: 26px;
+        transform: translateX(-50%);
+
+        color: var(--dim);
+        font-family: var(--display);
+        font-size: 10px;
+        letter-spacing: 0.3em;
+    }
+
+    .scroll-hint::after {
+        content: "";
+        display: block;
+        width: 1px;
+        height: 34px;
+        margin: 10px auto 0;
+        background: linear-gradient(var(--cyan), transparent);
+        animation: drip 2s ease-in-out infinite;
+        transform-origin: top;
+    }
+
+    @keyframes drip {
+        0%   { transform: scaleY(0); }
+        50%  { transform: scaleY(1); }
+        100% { transform: scaleY(1); opacity: 0; }
+    }
+
     /* SECTIONS */
 
     section {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: auto;
-        padding: 110px 28px;
+        padding: 130px 28px;
     }
 
     .section-label {
-        color: #43d9ff;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+
+        color: var(--cyan);
+        font-family: var(--display);
         font-size: 12px;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.22em;
         text-transform: uppercase;
-        margin-bottom: 16px;
+    }
+
+    .section-label span {
+        color: var(--dim);
     }
 
     h2 {
-        font-size: clamp(32px, 5vw, 52px);
-        margin-bottom: 28px;
-        letter-spacing: -0.03em;
+        font-family: var(--display);
+        font-size: clamp(36px, 6vw, 68px);
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+        margin-bottom: 30px;
+    }
+
+    h2.ja {
+        font-family: "Noto Sans JP", sans-serif;
+        font-size: clamp(30px, 4.6vw, 52px);
+        letter-spacing: -0.01em;
+        line-height: 1.35;
     }
 
     .section-text {
-        color: #9baabd;
+        color: var(--muted);
         max-width: 720px;
-        line-height: 2;
+        line-height: 2.1;
         font-size: 17px;
+    }
+
+    /* ABOUT */
+
+    .about {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+    }
+
+    .values {
+        display: grid;
+        gap: 14px;
+    }
+
+    .value {
+        display: flex;
+        gap: 20px;
+        align-items: baseline;
+
+        padding: 22px 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .value b {
+        min-width: 110px;
+        font-family: var(--display);
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        color: var(--cyan);
+    }
+
+    .value p {
+        color: #cbd5e1;
+        line-height: 1.8;
     }
 
     /* SERVICES */
@@ -253,106 +499,273 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
-        margin-top: 55px;
+        margin-top: 60px;
     }
 
     .card {
-        min-height: 260px;
-        padding: 30px;
+        --x: 50%;
+        --y: 50%;
 
-        border-radius: 18px;
+        position: relative;
+        min-height: 300px;
+        padding: 32px;
+        overflow: hidden;
 
+        border-radius: 22px;
         border: 1px solid rgba(255,255,255,0.10);
+        background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
 
-        background:
-            linear-gradient(
-                145deg,
-                rgba(255,255,255,0.07),
-                rgba(255,255,255,0.02)
-            );
+        transition: transform 0.35s, border-color 0.35s;
+    }
 
-        transition:
-            transform 0.3s,
-            border-color 0.3s,
-            background 0.3s;
+    .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.35s;
+
+        background: radial-gradient(360px circle at var(--x) var(--y), rgba(67,217,255,0.16), transparent 60%);
     }
 
     .card:hover {
         transform: translateY(-8px);
-        border-color: rgba(67,217,255,0.45);
+        border-color: rgba(67,217,255,0.4);
+    }
 
-        background:
-            linear-gradient(
-                145deg,
-                rgba(67,217,255,0.10),
-                rgba(255,255,255,0.03)
-            );
+    .card:hover::before {
+        opacity: 1;
+    }
+
+    .card > * {
+        position: relative;
+    }
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 70px;
     }
 
     .number {
-        color: #43d9ff;
-        font-family: monospace;
+        color: var(--cyan);
+        font-family: var(--display);
         font-size: 13px;
-        margin-bottom: 45px;
+    }
+
+    .card-top svg {
+        width: 30px;
+        height: 30px;
+        color: rgba(255,255,255,0.55);
+        transition: color 0.35s, transform 0.35s;
+    }
+
+    .card:hover .card-top svg {
+        color: var(--cyan);
+        transform: rotate(-8deg) scale(1.08);
     }
 
     .card h3 {
-        font-size: 21px;
-        margin-bottom: 15px;
+        font-family: var(--display);
+        font-size: 23px;
+        letter-spacing: -0.01em;
+        margin-bottom: 14px;
     }
 
     .card p {
         color: #8d9bae;
-        line-height: 1.8;
+        line-height: 1.9;
         font-size: 14px;
+    }
+
+    /* ROADMAP */
+
+    .roadmap {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-top: 70px;
+        list-style: none;
+    }
+
+    .roadmap::before,
+    .roadmap::after {
+        content: "";
+        position: absolute;
+        top: 9px;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+    }
+
+    /* 現在地（準備中）までの進捗 */
+    .roadmap::after {
+        width: 37.5%;
+        background: linear-gradient(90deg, var(--cyan), var(--heart));
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 1.6s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .visible .roadmap::after {
+        transform: scaleX(1);
+    }
+
+    .step {
+        position: relative;
+        padding-top: 42px;
+    }
+
+    .step::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.18);
+        background: var(--bg);
+    }
+
+    .step.done::before {
+        border-color: var(--cyan);
+        background: var(--cyan);
+    }
+
+    .step.now::before {
+        border-color: var(--heart);
+        background: var(--heart);
+        animation: beat 1.6s infinite;
+    }
+
+    .step small {
+        display: block;
+        margin-bottom: 10px;
+
+        color: var(--dim);
+        font-family: var(--display);
+        font-size: 12px;
+        letter-spacing: 0.2em;
+    }
+
+    .step.now small {
+        color: var(--heart);
+    }
+
+    .step h3 {
+        font-family: var(--display);
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .step p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .step.future h3 {
+        color: rgba(255,255,255,0.6);
     }
 
     /* CONTACT */
 
     .contact {
+        position: relative;
         margin-top: 60px;
+        padding: 64px 56px;
+        overflow: hidden;
 
-        padding: 55px;
-
-        border-radius: 24px;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(67,217,255,0.10),
-                rgba(155,140,255,0.10)
-            );
-
+        border-radius: 28px;
         border: 1px solid rgba(255,255,255,0.10);
+        background: linear-gradient(135deg, rgba(67,217,255,0.10), rgba(155,140,255,0.10) 60%, rgba(255,79,123,0.10));
+    }
+
+    .contact::after {
+        content: "GO";
+        position: absolute;
+        right: -10px;
+        bottom: -60px;
+
+        font-family: var(--display);
+        font-size: 260px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.06em;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255,255,255,0.12);
+        pointer-events: none;
+    }
+
+    .contact small {
+        display: block;
+        margin-bottom: 18px;
+        color: var(--muted);
+        font-size: 14px;
     }
 
     .contact a {
-        color: #ffffff;
-        font-size: clamp(22px, 4vw, 38px);
+        position: relative;
+        z-index: 1;
+
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+
+        color: var(--text);
+        font-family: var(--display);
+        font-size: clamp(22px, 4.4vw, 46px);
+        font-weight: 500;
+        letter-spacing: -0.02em;
         text-decoration: none;
-        border-bottom: 1px solid rgba(255,255,255,0.4);
+        word-break: break-all;
+    }
+
+    .contact a .arrow {
+        display: inline-block;
+        transition: transform 0.3s;
+    }
+
+    .contact a:hover .arrow {
+        transform: translateX(8px);
     }
 
     footer {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: auto;
         padding: 40px 28px;
 
-        color: #637287;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+
+        color: var(--dim);
         font-size: 12px;
 
-        border-top: 1px solid rgba(255,255,255,0.08);
+        border-top: 1px solid var(--line);
+    }
+
+    footer .motto {
+        font-family: var(--display);
+        letter-spacing: 0.2em;
     }
 
     /* 表示時アニメーション */
 
     .reveal {
         opacity: 0;
-        transform: translateY(25px);
+        transform: translateY(30px);
 
         transition:
-            opacity 0.8s ease,
-            transform 0.8s ease;
+            opacity 0.9s ease,
+            transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     .reveal.visible {
@@ -360,22 +773,91 @@
         transform: translateY(0);
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
 
         nav {
             display: none;
+        }
+
+        .about {
+            grid-template-columns: 1fr;
+            gap: 40px;
         }
 
         .cards {
             grid-template-columns: 1fr;
         }
 
-        .contact {
-            padding: 35px 25px;
+        .roadmap {
+            grid-template-columns: 1fr;
+            gap: 36px;
+            padding-left: 44px;
         }
 
-        .lead {
-            font-size: 16px;
+        .roadmap::before,
+        .roadmap::after {
+            top: 0;
+            left: 9px;
+            width: 2px;
+            height: 100%;
+        }
+
+        .roadmap::after {
+            height: 37.5%;
+            transform-origin: top;
+            transform: scaleY(0);
+            background: linear-gradient(var(--cyan), var(--heart));
+        }
+
+        .visible .roadmap::after {
+            transform: scaleY(1);
+        }
+
+        .step {
+            padding-top: 0;
+        }
+
+        .step::before {
+            left: -44px;
+        }
+
+        .contact {
+            padding: 40px 26px;
+        }
+
+        .contact::after {
+            font-size: 160px;
+            bottom: -36px;
+        }
+
+        section {
+            padding: 96px 20px;
+        }
+
+        .hero {
+            padding: 120px 20px 100px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .status .label {
+            display: none;
+        }
+
+        .nav {
+            padding: 0 20px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
     }
 </style>
@@ -384,136 +866,118 @@
 
 <body>
 
+<div class="backdrop" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"></div>
+
 <header>
     <div class="nav">
 
-        <div class="logo">
+        <a class="logo" href="#top" aria-label="Heartbit">
             Heart<span>bit</span>
-        </div>
+        </a>
 
-        <nav>
-            <a href="#about">About</a>
-            <a href="#services">Services</a>
-            <a href="#contact">Contact</a>
-        </nav>
+        <div class="nav-right">
+            <nav>
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#roadmap">Roadmap</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <div class="status">
+                <span class="dot"></span>
+                <span class="label">設立準備中</span>
+            </div>
+        </div>
 
     </div>
 </header>
 
 
-<main>
+<main id="top">
 
 <section class="hero">
 
+    <canvas id="pulse" aria-hidden="true"></canvas>
+
     <div class="hero-inner">
 
-        <div class="tag">
-            ON YOUR MARK
-        </div>
+        <div class="eyebrow">Heartbit LLC — Coming soon</div>
 
-        <h1>
-            ITの「こうしたい」を、<br>
-            <span class="gradient">かたちに。</span>
+        <h1 class="mark" aria-label="ON YOUR MARK">
+            <span class="row"><span class="word">ON YOUR</span></span>
+            <span class="row"><span class="word"><span class="gradient">MARK.</span><span class="cursor"></span></span></span>
         </h1>
 
-        <p class="lead">
-            Heartbitは、技術そのものではなく、
-            その先にある「実現したいこと」を大切にします。
-            業務システム、Web、AI。
-            アイデアとテクノロジーをつなぎ、
-            本当に使える仕組みへ。
-        </p>
+        <div class="start-line" aria-hidden="true"></div>
 
-        <div class="buttons">
+        <div class="hero-bottom">
 
-            <a class="button button-primary"
-               href="#services">
-                What we do →
-            </a>
+            <div>
+                <p class="catch">
+                    ITの「こうしたい」を、<br>
+                    <span class="gradient">かたちに。</span>
+                </p>
 
-            <a class="button button-secondary"
-               href="#contact">
-                Contact
-            </a>
+                <p class="lead">
+                    Heartbitは、技術そのものではなく、
+                    その先にある「実現したいこと」を大切にします。
+                    業務システム、Web、AI。
+                    アイデアとテクノロジーをつなぎ、本当に使える仕組みへ。
+                </p>
+
+                <div class="buttons">
+                    <a class="button button-primary" href="#services">
+                        What we do <span aria-hidden="true">→</span>
+                    </a>
+                    <a class="button button-secondary" href="#contact">
+                        Contact
+                    </a>
+                </div>
+            </div>
 
         </div>
 
     </div>
+
+    <div class="scroll-hint" aria-hidden="true">SCROLL</div>
 
 </section>
 
 
 <section id="about" class="reveal">
 
-    <div class="section-label">About Heartbit</div>
+    <div class="about">
 
-    <h2>
-        技術を、もっと身近に。
-    </h2>
+        <div>
+            <div class="section-label">01 <span>/</span> About Heartbit</div>
 
-    <p class="section-text">
-        複雑な技術を導入することが目的ではありません。
-        現場の課題を理解し、必要な技術を選び、
-        シンプルで実用的な仕組みにする。
-        Heartbitは、相談から設計・開発・導入まで、
-        アイデアを実際に動くものへ変えていきます。
-    </p>
+            <h2 class="ja">
+                技術を、<br>もっと身近に。
+            </h2>
 
-</section>
-
-
-<section id="services" class="reveal">
-
-    <div class="section-label">Services</div>
-
-    <h2>
-        Ideas into reality.
-    </h2>
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="number">01</div>
-
-            <h3>IT Consulting</h3>
-
-            <p>
-                業務や課題を整理し、
-                技術ありきではない現実的な解決方法を
-                一緒に考えます。
+            <p class="section-text">
+                複雑な技術を導入することが目的ではありません。
+                現場の課題を理解し、必要な技術を選び、
+                シンプルで実用的な仕組みにする。
+                Heartbitは、相談から設計・開発・導入まで、
+                アイデアを実際に動くものへ変えていきます。
             </p>
-
         </div>
 
-
-        <div class="card">
-
-            <div class="number">02</div>
-
-            <h3>Web & System Development</h3>
-
-            <p>
-                Web技術を活用し、
-                既存システムと新しいユーザー体験を
-                つなぐ仕組みを構築します。
-            </p>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="number">03</div>
-
-            <h3>AI Integration</h3>
-
-            <p>
-                AIを特別なものではなく、
-                実際の業務で使える機能として
-                システムへ組み込みます。
-            </p>
-
+        <div class="values">
+            <div class="value">
+                <b>HEART</b>
+                <p>人の「こうしたい」という想いから始める。</p>
+            </div>
+            <div class="value">
+                <b>BIT</b>
+                <p>小さな一歩を確実に積み重ね、動くかたちにする。</p>
+            </div>
+            <div class="value">
+                <b>BEAT</b>
+                <p>現場のリズムに寄り添い、長く使える仕組みを育てる。</p>
+            </div>
         </div>
 
     </div>
@@ -521,23 +985,133 @@
 </section>
 
 
+<section id="services" class="reveal">
+
+    <div class="section-label">02 <span>/</span> Services</div>
+
+    <h2 class="ja">
+        アイデアを、<span class="gradient">現実に。</span>
+    </h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-top">
+                <div class="number">01</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="M20 20l-3.5-3.5M8 11h6M11 8v6"/>
+                </svg>
+            </div>
+
+            <h3>ITコンサルティング</h3>
+
+            <p>
+                業務や課題を整理し、
+                技術ありきではない現実的な解決方法を
+                一緒に考えます。
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="number">02</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="16" rx="3"/>
+                    <path d="M3 9h18M9 14l-2 2 2 2M15 14l2 2-2 2"/>
+                </svg>
+            </div>
+
+            <h3>Web・システム開発</h3>
+
+            <p>
+                Web技術を活用し、
+                既存システムと新しいユーザー体験を
+                つなぐ仕組みを構築します。
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="number">03</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3l1.8 4.9L19 9.5l-5.2 1.6L12 16l-1.8-4.9L5 9.5l5.2-1.6z"/>
+                    <path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>
+                </svg>
+            </div>
+
+            <h3>AI活用・導入</h3>
+
+            <p>
+                AIを特別なものではなく、
+                実際の業務で使える機能として
+                システムへ組み込みます。
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="roadmap" class="reveal">
+
+    <div class="section-label">03 <span>/</span> Road to launch</div>
+
+    <h2 class="ja">
+        カウントダウンは、<br><span class="gradient">もう始まっている。</span>
+    </h2>
+
+    <p class="section-text">
+        Heartbitはまだ走り出す前。だからこそ、いちばんワクワクする瞬間にいます。
+    </p>
+
+    <ol class="roadmap">
+        <li class="step done">
+            <small>PHASE 01</small>
+            <h3>Vision</h3>
+            <p>「ITの“こうしたい”を、かたちに。」という想いを言葉にする。</p>
+        </li>
+        <li class="step now">
+            <small>PHASE 02 — NOW</small>
+            <h3>On your mark</h3>
+            <p>会社設立に向けた準備。サービスと仕組みを磨き込む。</p>
+        </li>
+        <li class="step future">
+            <small>PHASE 03</small>
+            <h3>Get set</h3>
+            <p>Heartbit合同会社を設立し、スタートラインにつく。</p>
+        </li>
+        <li class="step future">
+            <small>PHASE 04</small>
+            <h3>Go!</h3>
+            <p>最初のお客様と一緒に、アイデアを動くかたちへ。</p>
+        </li>
+    </ol>
+
+</section>
+
+
 <section id="contact" class="reveal">
 
-    <div class="section-label">Contact</div>
+    <div class="section-label">04 <span>/</span> Contact</div>
 
-    <h2>
-        Let's build something.
+    <h2 class="ja">
+        さあ、<span class="gradient">一緒につくろう。</span>
     </h2>
 
     <p class="section-text">
         「こんなことできる？」
         という段階から、お気軽にご相談ください。
+        設立前の今だからこそ、一緒に描けることがあります。
     </p>
 
     <div class="contact">
 
-        <a href="mailto:tanaka@heartbit.co.jp">
-            tanaka@heartbit.co.jp
+        <small>Mail</small>
+
+        <a href="mailto:sales@heartbit.co.jp">
+            sales@heartbit.co.jp <span class="arrow" aria-hidden="true">→</span>
         </a>
 
     </div>
@@ -548,11 +1122,16 @@
 
 
 <footer>
-    © 2026 Heartbit LLC. All Rights Reserved.
+    <div>© 2026 Heartbit LLC（設立準備中）</div>
+    <div class="motto">ON YOUR MARK.</div>
 </footer>
 
 
 <script>
+
+    const reduceMotion =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 
     /*
      * スクロールした位置に応じて
@@ -577,6 +1156,154 @@
     document
         .querySelectorAll(".reveal")
         .forEach(element => observer.observe(element));
+
+
+    /*
+     * スクロール進捗バー
+     */
+    const progress = document.querySelector(".progress");
+
+    window.addEventListener("scroll", () => {
+
+        const max =
+            document.documentElement.scrollHeight - window.innerHeight;
+
+        progress.style.transform =
+            `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+
+    }, { passive: true });
+
+
+    /*
+     * カードのマウス追従ライト
+     */
+    document
+        .querySelectorAll(".card")
+        .forEach(card => {
+
+            card.addEventListener("pointermove", event => {
+
+                const rect = card.getBoundingClientRect();
+
+                card.style.setProperty("--x", `${event.clientX - rect.left}px`);
+                card.style.setProperty("--y", `${event.clientY - rect.top}px`);
+
+            });
+
+        });
+
+
+    /*
+     * ヒーロー背景の心電図ライン（Heart + bit）
+     */
+    const canvas = document.getElementById("pulse");
+    const ctx = canvas.getContext("2d");
+    const startLine = document.querySelector(".start-line");
+
+    let width = 0;
+    let height = 0;
+
+    function resize() {
+
+        const ratio = window.devicePixelRatio || 1;
+
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    // 1拍分の波形（0〜1）を -1〜1 の高さで返す
+    function wave(t) {
+
+        if (t < 0.40) return 0;
+        if (t < 0.46) return -0.1 * Math.sin((t - 0.40) / 0.06 * Math.PI);
+        if (t < 0.49) return 0;
+        if (t < 0.51) return 0.15 * (t - 0.49) / 0.02;
+        if (t < 0.54) return 0.15 - 1.15 * (t - 0.51) / 0.03;
+        if (t < 0.57) return -1 + 1.4 * (t - 0.54) / 0.03;
+        if (t < 0.59) return 0.4 - 0.4 * (t - 0.57) / 0.02;
+        if (t < 0.70) return 0;
+        if (t < 0.80) return -0.22 * Math.sin((t - 0.70) / 0.10 * Math.PI);
+        return 0;
+    }
+
+    function draw(time) {
+
+        ctx.clearRect(0, 0, width, height);
+
+        const beat = Math.max(360, width / 3);
+        // スタートラインの上を鼓動が走る
+        const base = startLine.getBoundingClientRect().top - canvas.getBoundingClientRect().top;
+        const amp = Math.min(70, height * 0.08);
+        const head = reduceMotion ? width : (time * 0.32) % (width + 300);
+        const trail = width * 0.7;
+
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+
+        let prevX = 0;
+        let prevY = base;
+
+        for (let x = 3; x <= width; x += 3) {
+
+            const y = base + wave((x % beat) / beat) * amp;
+            const behind = head - x;
+
+            let alpha = 0.06;
+
+            if (behind >= 0 && behind < trail) {
+                alpha = Math.max(alpha, 0.9 * (1 - behind / trail));
+            }
+
+            const hue = x / width;
+
+            ctx.strokeStyle =
+                `rgba(${Math.round(67 + 188 * hue)}, ${Math.round(217 - 138 * hue)}, ${Math.round(255 - 132 * hue)}, ${alpha})`;
+
+            ctx.beginPath();
+            ctx.moveTo(prevX, prevY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            prevX = x;
+            prevY = y;
+        }
+
+        // 先頭の光
+        if (!reduceMotion && head <= width) {
+
+            const y = base + wave((head % beat) / beat) * amp;
+            const glow = ctx.createRadialGradient(head, y, 0, head, y, 26);
+
+            glow.addColorStop(0, "rgba(255,255,255,0.95)");
+            glow.addColorStop(0.3, "rgba(255,79,123,0.5)");
+            glow.addColorStop(1, "rgba(255,79,123,0)");
+
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(head, y, 26, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        if (!reduceMotion) {
+            requestAnimationFrame(draw);
+        }
+    }
+
+    window.addEventListener("resize", () => {
+
+        resize();
+
+        if (reduceMotion) {
+            draw(0);
+        }
+
+    });
+    resize();
+    requestAnimationFrame(draw);
 
 </script>
 
